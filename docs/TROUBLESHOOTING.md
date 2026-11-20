@@ -1,5 +1,17 @@
 # Troubleshooting
 
+### Card previews in the deck builder / crafting are black boxes
+SuperDepth3D is missing the pop-up fix, or *Near Cutoff* is 0. Re-run the installer, or apply SETUP §7, and check **Popup Fix → Near Cutoff = 0.02, Menus Only = on** in the ReShade menu.
+
+### The battlefield suddenly looks wrong / hurts after changing the pop-up fix
+Keep **Menus Only** on. With it off, the cutoff also flattens parts of the board.
+
+### The installer says "Fingerprint mismatch"
+A download didn't match the exact file the installer was tested with (the source changed, or the download was corrupted or intercepted). Nothing was installed. Try again later, or open an issue.
+
+### The installer says "MTG Arena is running"
+Close Arena completely (check the system tray) and run it again.
+
 ### Solid pink/purple screen (or solid white/grey)
 That's a depth *debug view* covering the game (ReShade's DisplayDepth effect, or SuperDepth3D's Depth Map View). Open the ReShade menu (Home, or Ctrl+Alt+Home with the recommended hotkeys) and untick DisplayDepth / set Depth Map View to Off. With the recommended hotkeys, Ctrl+Alt+E turns all effects off instantly.
 

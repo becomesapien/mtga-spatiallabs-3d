@@ -1,5 +1,7 @@
 # Setup guide
 
+> **Shortcut:** the [one-click installer](../README.md#easiest-way-the-installer) does sections 3–7 for you. You still need sections 1–2.
+
 Target: MTG Arena on Steam (tested; the standalone launcher should work the same), DirectX 11, on an Acer SpatialLabs display at 3840×2160.
 
 ## 1. SpatialLabs display
@@ -92,3 +94,26 @@ Key format: `<virtual-key code>,<ctrl>,<shift>,<alt>`. We found no conflicts wit
 | Ctrl+Alt+5 | Weaver latency mode (not saved between launches) |
 
 A copy is in [`config/ReShade-keys.ini`](../config/ReShade-keys.ini).
+
+## 7. Pop-up fix (deck builder card previews turning black)
+
+In the deck builder and crafting screens, Arena draws card previews with a depth of almost zero, which SuperDepth3D treats as extremely close. At a strong 3D setting they get pushed so far apart that they show up as black boxes. The fix: on screens with **no 3D scene** (six spots near the screen edges all have empty depth), anything nearer than a small cutoff is drawn flat at screen depth. The battlefield always has depth at those spots, so in games the fix is off and the board is untouched.
+
+> Don't use a plain always-on cutoff: Arena's board partly falls under 0.02 with this preset's Near Plane of 250, so it flattens chunks of the table and is hard on the eyes.
+
+The installer applies this automatically. To do it by hand, edit `reshade-shaders\Shaders\Depth3D\SuperDepth3D.fx` (v4.2.5):
+
+1. Directly above the line `float Depth(float2 texcoord)`, add:
+   ```hlsl
+   uniform float Popup_Near_Cutoff < ui_type = "slider"; ui_min = 0.0; ui_max = 0.5; ui_step = 0.001; ui_label = " Near Cutoff"; ui_category = "Popup Fix"; > = 0.02;
+   uniform float Popup_Far_Cutoff < ui_type = "slider"; ui_min = 0.5; ui_max = 1.0; ui_step = 0.001; ui_label = " Far Cutoff"; ui_category = "Popup Fix"; > = 1.0;
+   uniform bool Popup_Menus_Only < ui_label = " Menus Only"; ui_category = "Popup Fix"; > = true;
+   bool Popup_Empty(float2 uv) { float r = tex2Dlod(DepthBuffer, float4(uv,0,0)).x; return (Depth_Map == 1 ? r : 1.0 - r) < 0.0001; }
+   bool Popup_MenuScene() { return Popup_Empty(float2(0.1,0.1)) && Popup_Empty(float2(0.9,0.1)) && Popup_Empty(float2(0.1,0.9)) && Popup_Empty(float2(0.9,0.9)) && Popup_Empty(float2(0.5,0.08)) && Popup_Empty(float2(0.5,0.92)); }
+   ```
+2. Inside that function, right after the line `zBuffer = Two_Ch_zBuffer.x;` (just before `#if ALM == 1`), add:
+   ```hlsl
+   if (((Popup_Near_Cutoff > 0.0 && zBuffer < Popup_Near_Cutoff) || (Popup_Far_Cutoff < 1.0 && zBuffer > Popup_Far_Cutoff)) && (!Popup_Menus_Only || Popup_MenuScene()))
+       zBuffer = Zero_Parallax_Distance;
+   ```
+3. Reload (Ctrl+Alt+R). The preset sets `Popup_Near_Cutoff=0.02`; previews were fixed from 0.01 up in our testing.

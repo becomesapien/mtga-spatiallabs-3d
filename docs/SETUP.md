@@ -95,11 +95,11 @@ Key format: `<virtual-key code>,<ctrl>,<shift>,<alt>`. We found no conflicts wit
 
 A copy is in [`config/ReShade-keys.ini`](../config/ReShade-keys.ini).
 
-## 7. Pop-up fix (card previews turning black)
+## 7. Card zoom fix (zoomed-in cards turning black)
 
-Arena draws enlarged card previews (deck builder, crafting, opening packs) right at the camera lens, with a depth of almost exactly zero, which SuperDepth3D treats as extremely close. At a strong 3D setting they get pushed so far apart that they show up as black boxes. The fix: anything nearer than a tiny cutoff (0.001) is drawn flat at screen depth. Nothing on the battlefield is that close, so the board is untouched.
+When you zoom in on a card (right-click in the deck builder, crafting with wildcards, or opening booster packs), Arena draws the enlarged card right at the camera lens, at a depth of almost exactly zero. SuperDepth3D treats that as extremely close, and at a strong 3D setting the card is pushed so far out that it shows up as a black box. The fix: anything nearer than a tiny cutoff (0.001) is drawn flat at screen depth. Nothing on the battlefield is that close, so gameplay depth is untouched.
 
-> Keep the cutoff tight. With this preset's Near Plane of 250, parts of the board fall under 0.02, so a 0.02 cutoff flattens chunks of the table and is hard on the eyes. 0.001 fixed previews in the deck builder and pack opening in our testing. The optional *Menus Only* switch (off by default) restricts the fix to screens with empty depth, but it misses screens with a flat backdrop (packs, home), so leave it off.
+> Keep the cutoff tight. With this preset's Near Plane of 250, parts of the battlefield fall under 0.02, so a 0.02 cutoff flattens chunks of it and is hard on the eyes. 0.001 fixed zoomed cards in the deck builder and when opening packs in our testing. The optional *Menus Only* switch (off by default) restricts the fix to screens with empty depth, but it misses screens with a flat backdrop (opening packs, the Home screen), so leave it off.
 
 The installer applies this automatically. To do it by hand, edit `reshade-shaders\Shaders\Depth3D\SuperDepth3D.fx` (v4.2.5):
 

@@ -1,10 +1,10 @@
 # Troubleshooting
 
-### Card previews (deck builder, crafting, packs) are black boxes
-SuperDepth3D is missing the pop-up fix, or *Near Cutoff* is 0. Re-run the installer, or apply SETUP §7, and check **Popup Fix → Near Cutoff = 0.001, Menus Only = off** in the ReShade menu.
+### Zoomed-in cards (deck builder, crafting, opening packs) are black boxes
+SuperDepth3D is missing the card zoom fix, or *Near Cutoff* is 0. Re-run the installer, or apply SETUP §7, and check **Popup Fix → Near Cutoff = 0.001, Menus Only = off** in the ReShade menu.
 
-### The battlefield suddenly looks wrong / hurts after changing the pop-up fix
-Keep **Near Cutoff** tiny (0.001). Larger values (e.g. 0.02) also flatten parts of the board.
+### The battlefield suddenly looks wrong / hurts after changing the card zoom fix
+Keep **Near Cutoff** tiny (0.001). Larger values (e.g. 0.02) also flatten parts of the battlefield.
 
 ### The installer says "Fingerprint mismatch"
 A download didn't match the exact file the installer was tested with (the source changed, or the download was corrupted or intercepted). Nothing was installed. Try again later, or open an issue.
@@ -19,10 +19,10 @@ That's a depth *debug view* covering the game (ReShade's DisplayDepth effect, or
 Arena's **Anti-Aliasing is on**. Set **Options → Graphics → Anti-Aliasing → Off** in the game menu.
 
 ### The 3D looks "wrong everywhere" — shapes in the wrong places, like badly placed masks
-Arena's depth buffer is **upside down**. Set SuperDepth3D **Depth Map Flip = On**. Check with Depth Map View: the near table edge should be at the bottom, the far side at the top, and your companion's shape where the companion actually is.
+Arena's depth buffer is **upside down**. Set SuperDepth3D **Depth Map Flip = On**. Check with Depth Map View: your side of the battlefield should be nearest, at the bottom, and your opponent's side farther away at the top, and your pet's shape where the pet actually is.
 
 ### Everything looks flat / sunken into the screen
-Arena's camera sees the whole table within a thin depth range. The preset already has Near Plane Adjustment at its 250 maximum — raise **Depth Adjustment** and **Zero Parallax Distance** instead.
+Arena's camera sees the whole battlefield within a thin depth range. The preset already has Near Plane Adjustment at its 250 maximum — raise **Depth Adjustment** and **Zero Parallax Distance** instead.
 
 ### The screen looks like two stretched halves overlapping
 SuperDepth3D is **off** while the 3D lens is on. Enable SuperDepth3D in the effect list. After a crash, ReShade once saved the preset with no effects enabled (`Techniques=` empty) — run `Restore-3D-Settings.cmd` (see SETUP §4) and reload.

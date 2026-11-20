@@ -1,10 +1,10 @@
 # Troubleshooting
 
-### Card previews in the deck builder / crafting are black boxes
-SuperDepth3D is missing the pop-up fix, or *Near Cutoff* is 0. Re-run the installer, or apply SETUP §7, and check **Popup Fix → Near Cutoff = 0.02, Menus Only = on** in the ReShade menu.
+### Card previews (deck builder, crafting, packs) are black boxes
+SuperDepth3D is missing the pop-up fix, or *Near Cutoff* is 0. Re-run the installer, or apply SETUP §7, and check **Popup Fix → Near Cutoff = 0.001, Menus Only = off** in the ReShade menu.
 
 ### The battlefield suddenly looks wrong / hurts after changing the pop-up fix
-Keep **Menus Only** on. With it off, the cutoff also flattens parts of the board.
+Keep **Near Cutoff** tiny (0.001). Larger values (e.g. 0.02) also flatten parts of the board.
 
 ### The installer says "Fingerprint mismatch"
 A download didn't match the exact file the installer was tested with (the source changed, or the download was corrupted or intercepted). Nothing was installed. Try again later, or open an issue.

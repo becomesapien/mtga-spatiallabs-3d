@@ -40,7 +40,7 @@ To remove it, double-click **`Uninstall.cmd`** (restores your backed-up files).
 
 1. **Arena's Anti-Aliasing must be Off** (Options → Graphics). With it on, ReShade couldn't use Arena's depth buffer in our testing.
 2. **Arena's depth buffer is upside down.** SuperDepth3D needs **Depth Map Flip = On** (the preset does this). Without it, near and far are mirrored top-to-bottom and everything looks wrong.
-3. **Deck builder pop-ups need the pop-up fix.** In the deck builder / crafting screens Arena draws card previews with a depth of almost zero. SuperDepth3D reads that as "right against your nose", and at a strong 3D setting the pop-out is so big they turn into **black boxes**. The installer adds a *Popup Fix* (Near Cutoff 0.02, Menus Only on): on screens with no 3D scene behind them, anything that near is drawn flat at screen depth. It switches itself off whenever the battlefield is on screen, so gameplay depth is never touched (an always-on version flattened parts of the board and was hard on the eyes).
+3. **Pop-ups need the pop-up fix.** Arena draws enlarged card previews (deck builder, crafting, opening packs) right at the camera lens, with a depth of almost exactly zero. SuperDepth3D reads that as "touching your nose", and at a strong 3D setting the pop-out is so big they turn into **black boxes**. The installer adds a *Popup Fix* (Near Cutoff 0.001): anything that close is drawn flat at screen depth. Nothing on the battlefield is anywhere near that close, so gameplay depth is untouched. (A looser 0.02 cutoff also caught parts of the board and was hard on the eyes; keep it tight.)
 
 ## Manual setup
 

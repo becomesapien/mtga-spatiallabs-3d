@@ -151,9 +151,9 @@ try {
     $sdPath = Join-Path $tmp 'SuperDepth3D.fx'
     $sd = [IO.File]::ReadAllText($sdPath)
     $uniforms = "`t// [POPUP-FIX BEGIN]`n" +
-        "`tuniform float Popup_Near_Cutoff < ui_type = `"slider`"; ui_min = 0.0; ui_max = 0.5; ui_step = 0.001; ui_label = `" Near Cutoff`"; ui_tooltip = `"Anything nearer than this is drawn flat at screen depth. Fixes pop-ups (card previews, rewards) turning black. 0 = off.`"; ui_category = `"Popup Fix`"; > = 0.02;`n" +
+        "`tuniform float Popup_Near_Cutoff < ui_type = `"slider`"; ui_min = 0.0; ui_max = 0.5; ui_step = 0.001; ui_label = `" Near Cutoff`"; ui_tooltip = `"Anything nearer than this is drawn flat at screen depth. Fixes pop-ups (card previews, rewards) turning black. 0 = off.`"; ui_category = `"Popup Fix`"; > = 0.001;`n" +
         "`tuniform float Popup_Far_Cutoff < ui_type = `"slider`"; ui_min = 0.5; ui_max = 1.0; ui_step = 0.001; ui_label = `" Far Cutoff`"; ui_tooltip = `"Anything farther than this is drawn flat at screen depth. 1 = off.`"; ui_category = `"Popup Fix`"; > = 1.0;`n" +
-        "`tuniform bool Popup_Menus_Only < ui_label = `" Menus Only`"; ui_tooltip = `"Only apply the cutoff on screens without a 3D scene (deck builder, crafting), so the battlefield is never touched.`"; ui_category = `"Popup Fix`"; > = true;`n" +
+        "`tuniform bool Popup_Menus_Only < ui_label = `" Menus Only`"; ui_tooltip = `"Only apply the cutoff on screens without a 3D scene (screens with empty depth). Off by default: the tight Near Cutoff alone already leaves the battlefield untouched.`"; ui_category = `"Popup Fix`"; > = false;`n" +
         "`tbool Popup_Empty(float2 uv) { float r = tex2Dlod(DepthBuffer, float4(uv,0,0)).x; return (Depth_Map == 1 ? r : 1.0 - r) < 0.0001; }`n" +
         "`tbool Popup_MenuScene() { return Popup_Empty(float2(0.1,0.1)) && Popup_Empty(float2(0.9,0.1)) && Popup_Empty(float2(0.1,0.9)) && Popup_Empty(float2(0.9,0.9)) && Popup_Empty(float2(0.5,0.08)) && Popup_Empty(float2(0.5,0.92)); }`n" +
         "`t// [POPUP-FIX END]`n"

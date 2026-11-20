@@ -95,19 +95,19 @@ Key format: `<virtual-key code>,<ctrl>,<shift>,<alt>`. We found no conflicts wit
 
 A copy is in [`config/ReShade-keys.ini`](../config/ReShade-keys.ini).
 
-## 7. Pop-up fix (deck builder card previews turning black)
+## 7. Pop-up fix (card previews turning black)
 
-In the deck builder and crafting screens, Arena draws card previews with a depth of almost zero, which SuperDepth3D treats as extremely close. At a strong 3D setting they get pushed so far apart that they show up as black boxes. The fix: on screens with **no 3D scene** (six spots near the screen edges all have empty depth), anything nearer than a small cutoff is drawn flat at screen depth. The battlefield always has depth at those spots, so in games the fix is off and the board is untouched.
+Arena draws enlarged card previews (deck builder, crafting, opening packs) right at the camera lens, with a depth of almost exactly zero, which SuperDepth3D treats as extremely close. At a strong 3D setting they get pushed so far apart that they show up as black boxes. The fix: anything nearer than a tiny cutoff (0.001) is drawn flat at screen depth. Nothing on the battlefield is that close, so the board is untouched.
 
-> Don't use a plain always-on cutoff: Arena's board partly falls under 0.02 with this preset's Near Plane of 250, so it flattens chunks of the table and is hard on the eyes.
+> Keep the cutoff tight. With this preset's Near Plane of 250, parts of the board fall under 0.02, so a 0.02 cutoff flattens chunks of the table and is hard on the eyes. 0.001 fixed previews in the deck builder and pack opening in our testing. The optional *Menus Only* switch (off by default) restricts the fix to screens with empty depth, but it misses screens with a flat backdrop (packs, home), so leave it off.
 
 The installer applies this automatically. To do it by hand, edit `reshade-shaders\Shaders\Depth3D\SuperDepth3D.fx` (v4.2.5):
 
 1. Directly above the line `float Depth(float2 texcoord)`, add:
    ```hlsl
-   uniform float Popup_Near_Cutoff < ui_type = "slider"; ui_min = 0.0; ui_max = 0.5; ui_step = 0.001; ui_label = " Near Cutoff"; ui_category = "Popup Fix"; > = 0.02;
+   uniform float Popup_Near_Cutoff < ui_type = "slider"; ui_min = 0.0; ui_max = 0.5; ui_step = 0.001; ui_label = " Near Cutoff"; ui_category = "Popup Fix"; > = 0.001;
    uniform float Popup_Far_Cutoff < ui_type = "slider"; ui_min = 0.5; ui_max = 1.0; ui_step = 0.001; ui_label = " Far Cutoff"; ui_category = "Popup Fix"; > = 1.0;
-   uniform bool Popup_Menus_Only < ui_label = " Menus Only"; ui_category = "Popup Fix"; > = true;
+   uniform bool Popup_Menus_Only < ui_label = " Menus Only"; ui_category = "Popup Fix"; > = false;
    bool Popup_Empty(float2 uv) { float r = tex2Dlod(DepthBuffer, float4(uv,0,0)).x; return (Depth_Map == 1 ? r : 1.0 - r) < 0.0001; }
    bool Popup_MenuScene() { return Popup_Empty(float2(0.1,0.1)) && Popup_Empty(float2(0.9,0.1)) && Popup_Empty(float2(0.1,0.9)) && Popup_Empty(float2(0.9,0.9)) && Popup_Empty(float2(0.5,0.08)) && Popup_Empty(float2(0.5,0.92)); }
    ```
@@ -116,4 +116,4 @@ The installer applies this automatically. To do it by hand, edit `reshade-shader
    if (((Popup_Near_Cutoff > 0.0 && zBuffer < Popup_Near_Cutoff) || (Popup_Far_Cutoff < 1.0 && zBuffer > Popup_Far_Cutoff)) && (!Popup_Menus_Only || Popup_MenuScene()))
        zBuffer = Zero_Parallax_Distance;
    ```
-3. Reload (Ctrl+Alt+R). The preset sets `Popup_Near_Cutoff=0.02`; previews were fixed from 0.01 up in our testing.
+3. Reload (Ctrl+Alt+R). The preset sets `Popup_Near_Cutoff=0.001` and `Popup_Menus_Only=0`.
